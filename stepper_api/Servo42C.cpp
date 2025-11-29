@@ -38,13 +38,32 @@ bool Servo42C::readBytes(uint8_t* buf, size_t len) {
 
     while (idx < len) {
         if (_serial->available()) {
-            buf[idx++] = (uint8_t)_serial->read();
+            uint8_t b = (uint8_t)_serial->read();
+
+            // Keep in sync: first byte must be the slave address.
+            if (idx == 0 && b != _addr) {
+                // Uncomment this if you want to see the junk:
+                // Serial.print("Dropping byte 0x");
+                // Serial.println(b, HEX);
+                continue;  // skip garbage
+            }
+
+            buf[idx++] = b;
+
+            // Debug (you can keep or remove):
+            // Serial.print("RX[");
+            // Serial.print(idx - 1);
+            // Serial.print("] = 0x");
+            // if (b < 0x10) Serial.print('0');
+            // Serial.println(b, HEX);
         } else if (millis() - start > _timeoutMs) {
-            return false; // timeout
+            // Serial.println("readBytes timeout");
+            return false;
         }
     }
     return true;
 }
+
 
 bool Servo42C::writeSimpleCmd(uint8_t code) {
     uint8_t frame[3];

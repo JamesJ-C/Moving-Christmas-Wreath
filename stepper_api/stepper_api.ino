@@ -34,7 +34,7 @@ void setup() {
     Serial.println("Stopping motor...");
     motor.stop();
 
-    // Example: move exactly 1 rev (for 200-step motor with 16 microsteps = 3200 pulses)
+    // // Example: move exactly 1 rev (for 200-step motor with 16 microsteps = 3200 pulses)
     uint32_t oneRevPulses = 3200;
     Serial.println("Running 1 revolution CCW...");
     if (!motor.runSteps(Servo42C::CCW, 10, oneRevPulses)) {
@@ -42,15 +42,21 @@ void setup() {
     } else {
         Serial.println("runSteps command accepted");
     }
+
+        delay(2000);
+
+    Serial.println("Stopping motor...");
+    motor.stop();
+    delay(10000);
 }
 
 void loop() {
 
 
-  motor.runConstantSpeed(Servo42C::CW, 20);
+//  motor.runConstantSpeed(Servo42C::CW, 127);
 
 
-    // Periodically check shaft error for debugging
+  //   // Periodically check shaft error for debugging
     static uint32_t lastPrint = 0;
     if (millis() - lastPrint > 1000) {
         lastPrint = millis();
